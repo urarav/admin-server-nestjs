@@ -10,6 +10,7 @@ import {
 import { UserService } from './user.service';
 import { UserInfoDto } from './dto/user-info.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { SkipAuth } from '../auth/decorator/skip-auth.decorator';
 
 @Controller('user')
 export class UserController {
@@ -20,6 +21,7 @@ export class UserController {
     return this.userService.setPermissions(userInfoDto);
   }
 
+  @SkipAuth()
   @Post('register')
   create(@Body() userInfoDto: UserInfoDto) {
     return this.userService.create(userInfoDto);
