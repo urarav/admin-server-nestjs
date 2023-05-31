@@ -8,9 +8,9 @@ import {
 } from 'typeorm';
 import { Permission } from './permission.entity';
 
-enum accountStatus {
-  inactive,
-  active,
+enum AccountStatus {
+  INACTIVE,
+  ACTIVE,
 }
 
 @Entity()
@@ -30,8 +30,8 @@ export class User {
   @Column({
     type: 'enum',
     name: 'account_status',
-    enum: accountStatus,
-    default: 1,
+    enum: AccountStatus,
+    default: AccountStatus.ACTIVE,
   })
   accountStatus: number;
 
