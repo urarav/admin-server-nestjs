@@ -18,6 +18,7 @@ import { APP_GUARD } from '@nestjs/core';
       secret: jwtConstants.secret,
       signOptions: {
         expiresIn: '1h',
+        algorithm: 'HS256',
       },
     }),
   ],
