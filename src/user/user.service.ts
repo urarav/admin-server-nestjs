@@ -14,8 +14,7 @@ export class UserService {
     @InjectRepository(User) private readonly userRepository: Repository<User>,
     @InjectRepository(Permission)
     private readonly permission: Repository<Permission>,
-  ) {
-  }
+  ) {}
 
   async setPermissions(userInfoDto: UserInfoDto) {
     const { id, permissions } = userInfoDto;

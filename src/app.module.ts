@@ -11,7 +11,7 @@ import { AuthModule } from './auth/auth.module';
     UserModule,
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: ['.env.production', '.env.development'],
+      envFilePath: [`.env.${process.env.NODE_ENV}`, '.env'],
     }),
     TypeOrmModule.forRoot({
       type: 'mysql',
