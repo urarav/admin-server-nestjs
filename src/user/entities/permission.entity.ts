@@ -12,7 +12,10 @@ export class Permission {
   @Column({ default: true })
   status: boolean;
 
+  @Column({ name: 'user_id', default: null })
+  userId: string;
+
   @ManyToOne(() => User, (user) => user.permissions)
-  @JoinColumn({ foreignKeyConstraintName: 'f_uk' })
+  @JoinColumn({ foreignKeyConstraintName: 'f_uk', name: 'user_id' })
   user: User;
 }

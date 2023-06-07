@@ -1,4 +1,4 @@
-import { Request, Controller, Post, UseGuards, Get } from '@nestjs/common';
+import { Request, Controller, Post, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthGuard } from '@nestjs/passport';
 import { SkipAuth } from './decorator/skip-auth.decorator';
@@ -12,10 +12,5 @@ export class AuthController {
   @Post('login')
   async login(@Request() req) {
     return this.authService.login(req.user);
-  }
-
-  @Get('profile')
-  async getProfile(@Request() req) {
-    return req.user;
   }
 }

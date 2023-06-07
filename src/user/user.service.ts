@@ -1,6 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { UserInfoDto } from './dto/user-info.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { FindOptionsWhere, Repository } from 'typeorm';
@@ -13,8 +12,9 @@ export class UserService {
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
     @InjectRepository(Permission)
-    private readonly permission: Repository<Permission>,
-  ) {}
+    private readonly permissionRepository: Repository<Permission>,
+  ) {
+  }
 
   async setPermissions(userInfoDto: UserInfoDto) {
     const { id, permissions } = userInfoDto;
@@ -23,10 +23,13 @@ export class UserService {
       const permission = new Permission();
       permission.name = permissionName;
       permission.id = v4();
-      const instance = await this.permission.save(permission);
+      const instance = await this.permissionRepository.save(permission);
       permissionInstanceList.push(instance);
     }
     const targetUser = await this.findOne({ id });
+    if (!targetUser)
+      throw new HttpException('用户不存在', HttpStatus.BAD_REQUEST);
+    await this.permissionRepository.delete({ userId: targetUser.id });
     targetUser.permissions = permissionInstanceList;
     await this.userRepository.save(targetUser);
   }
@@ -48,21 +51,11 @@ export class UserService {
     return null;
   }
 
-  findAll() {
-    return `This action returns all user`;
-  }
-
   async findOne(opt: FindOptionsWhere<User>) {
     return await this.userRepository.findOne({
       where: opt,
+      relations: ['permissions'],
+      select: ['username', 'permissions', 'id', 'accountStatus'],
     });
-  }
-
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${ id } user`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${ id } user`;
   }
 }
