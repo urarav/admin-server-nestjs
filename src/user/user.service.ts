@@ -4,33 +4,33 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { FindOptionsWhere, Repository } from 'typeorm';
 import { v4 } from 'uuid';
-import { Permission } from './entities/permission.entity';
+import { Role } from './entities/role.entity';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
-    @InjectRepository(Permission)
-    private readonly permissionRepository: Repository<Permission>,
+    @InjectRepository(Role)
+    private readonly roleRepository: Repository<Role>,
   ) {
   }
 
   async setPermissions(userInfoDto: UserInfoDto) {
-    const { id, permissions } = userInfoDto;
-    const permissionInstanceList: Permission[] = [];
-    for (const permissionName of permissions) {
-      const permission = new Permission();
-      permission.name = permissionName;
-      permission.id = v4();
-      const instance = await this.permissionRepository.save(permission);
-      permissionInstanceList.push(instance);
+    const { id, roles } = userInfoDto;
+    const roleInstanceList: Role[] = [];
+    for (const roleName of roles) {
+      const role = new Role();
+      role.name = roleName;
+      role.id = v4();
+      const instance = await this.roleRepository.save(role);
+      roleInstanceList.push(instance);
     }
     const targetUser = await this.findOne({ id });
     if (!targetUser)
       throw new HttpException('用户不存在', HttpStatus.BAD_REQUEST);
-    await this.permissionRepository.delete({ userId: targetUser.id });
-    targetUser.permissions = permissionInstanceList;
+    await this.roleRepository.delete({ userId: targetUser.id });
+    targetUser.roles = roleInstanceList;
     await this.userRepository.save(targetUser);
   }
 
@@ -54,8 +54,7 @@ export class UserService {
   async findOne(opt: FindOptionsWhere<User>) {
     return await this.userRepository.findOne({
       where: opt,
-      relations: ['permissions'],
-      select: ['username', 'permissions', 'id', 'accountStatus'],
+      relations: ['roles'],
     });
   }
 }

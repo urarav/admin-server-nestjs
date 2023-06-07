@@ -2,7 +2,7 @@ import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
 import { User } from './user.entity';
 
 @Entity()
-export class Permission {
+export class Role {
   @PrimaryColumn()
   id: string;
 
@@ -15,7 +15,7 @@ export class Permission {
   @Column({ name: 'user_id', default: null })
   userId: string;
 
-  @ManyToOne(() => User, (user) => user.permissions)
+  @ManyToOne(() => User, (user) => user.roles)
   @JoinColumn({ foreignKeyConstraintName: 'f_uk', name: 'user_id' })
   user: User;
 }

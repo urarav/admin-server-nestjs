@@ -1,6 +1,6 @@
 export class UserInfoDto {
   id: string;
-  permissions: string[];
+  roles: string[];
   username: string;
   password: string;
   email?: string;

@@ -15,8 +15,8 @@ export class HttpFilter implements ExceptionFilter {
       exception instanceof HttpException
         ? exception.getStatus()
         : HttpStatus.INTERNAL_SERVER_ERROR;
-    response.status(statusCode).json({
-      statusCode,
+    response.status(HttpStatus.OK).json({
+      statusCode: statusCode,
       data: null,
       success: false,
       message: exception?.message ?? 'Internal server error',

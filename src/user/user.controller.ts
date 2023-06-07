@@ -5,7 +5,8 @@ import { SkipAuth } from '../auth/decorator/skip-auth.decorator';
 
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: UserService) {
+  }
 
   @Post('setPermissions')
   setPermissions(@Body() userInfoDto: UserInfoDto) {
@@ -20,6 +21,8 @@ export class UserController {
 
   @Get('profile')
   async getProfile(@Request() req) {
-    return this.userService.findOne(req.user);
+    const result = await this.userService.findOne(req.user);
+    delete result.password;
+    return result;
   }
 }

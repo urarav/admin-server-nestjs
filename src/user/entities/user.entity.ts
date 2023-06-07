@@ -6,7 +6,7 @@ import {
   PrimaryColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Permission } from './permission.entity';
+import { Role } from './role.entity';
 
 enum AccountStatus {
   INACTIVE,
@@ -41,6 +41,6 @@ export class User {
   @UpdateDateColumn({ type: 'timestamp', name: 'update_time' })
   updateTime: Date;
 
-  @OneToMany(() => Permission, (permission) => permission.user)
-  permissions: Permission[];
+  @OneToMany(() => Role, (permission) => permission.user)
+  roles: Role[];
 }
