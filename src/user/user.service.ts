@@ -13,8 +13,7 @@ export class UserService {
     @InjectRepository(User) private readonly userRepository: Repository<User>,
     @InjectRepository(Role)
     private readonly roleRepository: Repository<Role>,
-  ) {
-  }
+  ) {}
 
   async setPermissions(userInfoDto: UserInfoDto) {
     const { id, roles } = userInfoDto;
@@ -51,10 +50,25 @@ export class UserService {
     return null;
   }
 
-  async findOne(opt: FindOptionsWhere<User>) {
-    return await this.userRepository.findOne({
-      where: opt,
-      relations: ['roles'],
-    });
+  async profile(opt: FindOptionsWhere<User>) {
+    const result = await this.findOne(opt);
+    return Object.assign(result, { roles: result.roles.map((t) => t.name) });
+  }
+
+  async findOne(opt: FindOptionsWhere<User>, isValidPwd = false) {
+    const fieldList = [
+      'user.id',
+      'user.username',
+      'user.accountStatus',
+      'role.name',
+    ];
+    isValidPwd && fieldList.push('user.password');
+    return await this.userRepository
+      .createQueryBuilder('user')
+      .select(fieldList)
+      .leftJoin('user.roles', 'role')
+      .where('user.id = :id', { id: opt.id })
+      .orWhere('user.username = :username', { username: opt.username })
+      .getOne();
   }
 }

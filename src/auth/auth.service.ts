@@ -18,7 +18,7 @@ export class AuthService {
   }
 
   async validateUser(username: string, password: string) {
-    const targetUser = await this.userService.findOne({ username });
+    const targetUser = await this.userService.findOne({ username }, true);
     if (!targetUser)
       throw new HttpException('用户不存在', HttpStatus.BAD_REQUEST);
     const { username: name, id, password: hash } = targetUser;
